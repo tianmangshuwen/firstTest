@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div id="app">
+
+
+</div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript">
+
+  var Son = Vue.extend({
+    template: `<div>
+<input type="text" v-model="num">
+<button @click="add"> 添加</button>
+
+</div> `,
+    methods: {
+      add() {
+        this.num+=1;
+        //由于Object.defineProperty中只定义了set和value,添加\删除属性要用Vue.add和Vue.delete(注意:对象不能是 Vue 实例，或者 Vue 实例的根数据对象)
+        //错误写法
+        //this.test[0].b=1;  不生效
+        
+        //delete this.test[0] 属性还存在只是赋值为empty
+
+        //this.$set(this.$data,'b',1)   //报错
+        //this.$delete(this.$data,test)  //报错 
+
+        //正确写法
+        this.$set(this.test[0],'b',1)
+        this.$delete(this.test[0],'a')  //属性也会删除
+        
+
+        console.log(this.test)
+      }
+    },data(){
+      return {
+        num:1,
+        test:[{a:1}]
+      }
+    }
+  })
+  new Vue({
+  el:"#app",
+  components:{son:Son},
+    template:`<div><son/><br><son/></div>`
+  })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <style>
+      .a {
+        background-color: red;
+      }
+
+      .b {
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script
+      type="text/javascript"
+      src="..\node_modules\vue\dist\vue.js"
+    ></script>
+    <script type="text/javascript">
+      Vue.component('child', {
+        render (h) {
+          const tag = ['div', 'p', 'strong', 'h1', 'h2', 'textarea'][
+            this.level - 1
+          ]
+          return h(tag, this.$slots.default)
+        },
+        props: {
+          level: { type: Number, required: true }
+        }
+      })
+      new Vue({
+        el: '#app',
+        template: `<div>text
+                        <h1>this is {{test}}</h1>
+                        <h1 v-text="text">原始text<span>大家好！</span></h1>
+                        <h1 v-html="html">原始htmlspan  <span>大家好！</span></h1>
+                        <button v-if="num==1">测试if</button>
+                        <button v-else-if="num==2">测试else_if</button>
+                        <button v-else>测试else</button><br>
+                        <button v-show=" v_show.toString() == 'true'" @click="v_show=!v_show">改变show</button><br>
+                        <keep-alive>
+                        <button v-if=" v_if.toString() == 'true'" @click='methodIf()'>改变if</button><br>
+                        </keep-alive>
+        <h1>{{v_show}}</h1>
+                        v_bind_show:<input type="text" :value="v_show"><br>
+                        v_model_show:<input type="text" v-model="v_show" ><br>
+                        v_model_if:<input type="text" v-model="v_if" >
+                        <ul>
+
+                          <h2>遍历数组：</h2>
+                          <li v-for="(value,index) in stu" :class="index%2 == 0 ? 'a':'b'" >
+                        {{value.name}}
+                          </li>
+                        </ul>
+                         <ul>
+                         <h2>遍历对象：</h2>
+                          <li v-for="(value,key,index) in stu2" >
+                          key:{{key}}
+                          value:{{value}}
+                          index:{{index}}
+                          </li>
+                        </ul>
+        <child :level="level">Hello world!</child>
+
+
+                      </div>`,
+        //   template: `<div>
+        //   <child :level="level">Hello world!</child>
+        // </div>`,
+        data: () => {
+          console.log("this:",this)
+          let a = [1, 2, 3, 5, 6, 1, 3, 57, 5, 7]
+          console.log(Array.from(new Set(a)))
+
+          return {
+            test: 'vue_test',
+            html: '<div>this is v-html</div>',
+            text: 'this is v-text',
+            num: 1,
+            v_if: true,
+            v_show: true,
+            stu: [
+              { name: 'ys', sex: '男' },
+              { name: 'ya', sex: '女' },
+              { name: 'yb', sex: '男' },
+              { name: 'yc', sex: '女' }
+            ],
+            stu2: { name: 'ys', sex: '男', age: 13 },
+            level: 3
+          }
+        },
+        mounted () {
+          console.log('this:', this)
+        },
+        methods: {
+          methodIf: function () {
+            this.v_if = !this.v_if
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

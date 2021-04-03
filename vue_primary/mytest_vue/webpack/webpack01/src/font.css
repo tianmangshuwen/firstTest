@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'webfont';
+    font-display: swap;
+  
+    src:url('webfont.woff') format('woff'), /* chrome、firefox */
+    
+}
+
+.web-font {
+    font-family: "webfont" !important;
+    font-size: 25px;
+    /* font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; */
+}
+

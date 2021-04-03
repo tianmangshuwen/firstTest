@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <div v-for="(item,index) in list" :key="index">
+        <!-- <div v-for="(item,index) in list" :key="item.id"> -->
+
+      id:  {{item.id}} index: {{index}}       <son :data=item></son>
+        <button @click="delClick(index)">删除</button>
+      </div>
+
+
+</div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript">
+// diff算法默认使用“就地复用”的策略，是一个首尾交叉对比的过程。
+// 用index作为key和不加key是一样的，都采用“就地复用”的策略
+// “就地复用”的策略，只适用于不依赖子组件状态或临时 DOM 状态 (例如：表单输入值) 的列表渲染输出。
+// 将与元素唯一对应的值作为key，可以最大化利用dom节点，提升性能
+//参考：https://www.cnblogs.com/youhong/p/11327062.html
+//当v-for用index做为key值时，第二个点击为yes，然后删除第一个，会发现删除的是第三个子组件（组件删错但数据是对的），key改为id时正确
+  var Son = Vue.extend({
+    template:'<button @click="itemClick">{{status}}</button>',
+    props: ['data'],
+    data () {
+      return {
+        status: 'no'
+      }
+    },
+    methods: {
+      itemClick () {
+        this.status = 'yes'
+      }
+    } 
+  })
+Vue.component('son',Son);
+  new Vue({
+  el:"#app",
+  data() {
+      return {
+        list: [
+          {
+            msg: 'k1',
+            id: 1
+          },
+          {
+            msg: 'k2',
+            id: 2
+          },
+          {
+            msg: 'k3',
+            id:3
+          }
+        ]
+      }
+    },
+    methods: {
+      delClick (index) {
+        this.list.splice(index, 1)
+      }
+    }
+  })
+</script>
+
+</body>
+</html>

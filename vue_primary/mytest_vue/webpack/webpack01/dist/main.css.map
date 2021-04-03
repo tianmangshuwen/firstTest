@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://webpack01/./src/button.less"],"names":[],"mappings":"AAAA;EACI;AACJ","file":"main.css","sourcesContent":["button{\n    color: red;\n}"],"sourceRoot":""}

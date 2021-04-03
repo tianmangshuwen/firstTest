@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<a href="#/login">登录</a>
+<a href="#/registered">注册</a>
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript" src="..\node_modules\vue-router\dist\vue-router.js"></script>
+<script type="text/javascript">
+  //router核心原理
+  // var hashk=document.getElementById('app');
+  
+  // window.addEventListener("hashchange", function(){
+  //   console.log("1111111")
+  
+  //   switch (location.hash) {
+  
+  //     case '#/login':
+  //       console.log('11111');
+  //       hashk.innerHTML='this is basic login!';
+  //           break;
+  //     case '#/registered':
+  //       console.log('11111');
+  //       hashk.innerHTML=`this is basic registered!`;
+  //       break;
+  
+  
+  //   }
+  
+  // })
+
+  Vue.use(VueRouter);
+
+  var Login={
+    template:`<div>this is login!</div>`
+  }
+  var Registered=Vue.extend({
+    template:`<div>this is registered!</div>`
+  })
+var router =new VueRouter({
+  routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },{
+      path: '/registered',
+      name: 'registered',
+      component: Registered
+    }
+  ]
+
+})
+
+  var App={
+    //router-link相当于a标签
+    template:`
+          <div>
+          <router-link to="/login">去登录</router-link>
+
+          <router-link :to="{name:'registered'}">去注册</router-link>
+          <router-view></router-view>
+          <button ref="btn">test_ref</button>
+
+          测试页面渲染：<input type="text" v-if="show" ref="testShow">
+
+          </div>
+     `,
+    mounted:function(){
+      console.log(this.$refs.btn);
+
+      this.show=false;
+      this.show=true;
+      //$nextTick(function(){})用于页面渲染后执行
+      this.$nextTick(()=>{
+        this.$refs.testShow.focus();
+      })
+    },
+    data:function(){
+      return {show:true}
+    }
+
+  }
+  new Vue({
+    el:'#app',
+    router:router,
+    components:{
+      app:App
+    },
+    template: `<app/>`
+
+
+
+
+  })
+
+
+
+
+</script>
+</body>
+</html>

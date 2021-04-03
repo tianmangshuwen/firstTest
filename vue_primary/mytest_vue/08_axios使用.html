@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="shortcut icon" href="#" />
+</head>
+<body>
+
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript" src="..\node_modules\vue-router\dist\vue-router.js"></script>
+<script type="text/javascript" src="..\node_modules\axios\dist\axios.js"></script>
+<script type="text/javascript">
+//axios的基本使用
+//1.合并请求
+//2.先后请求
+//3.文件上传，暂停，恢复
+
+
+  Vue.prototype.$axios = axios;
+  var Son=Vue.extend({
+    template:`<div>
+获取id：<input type="text" v-model.lazy ="id">
+<button @click="getData">获取数据</button>
+<button @click="postData(id,$event)">提交数据</button>
+<br>
+<button @click="mergeData">合并请求</button><br>
+请求一：{{res1}}
+请求二：{{res2}}
+<br>
+<button @click="getSex">
+测试异步调用接口(根据姓名获取sex)：
+</button>
+{{sex}}<br>
+选择上传文件：
+<input type="file" name="File" @change="changeFile">
+<button @click="upLoad">上传</button><br>
+上传进度:{{rate}}
+<button @click="cancel_upload">暂停</button>
+<button @click="resume_upload">恢复</button>
+<br>
+测试接口：
+<button @click="get_img">获取图片</button>
+<button @click="get_list">带参数获取清单</button>
+
+
+
+
+
+</div>`,methods:{
+     getData:function(){
+        //$axios.get(url,option)
+
+        this.$axios.get('http://127.0.0.1:8888/get').then((res)=>{
+            console.log('返回get：'+JSON.stringify(res))
+          this.id=res.data;
+
+        })
+        .catch((e)=>{
+            console.log("异常："+e)
+        })
+
+
+      },
+      postData:function (id,$event) {
+        this.$axios.post('http://127.0.0.1:8888/postdata',id)
+          .then((res)=>{
+            this.$axios.get('http://127.0.0.1:8888/get').then((res)=>{
+             this.id=res.data;
+
+            })
+
+          })
+          .catch((e)=>{
+            console.log("异常："+e)
+          })
+
+       },mergeData:function(){
+       this.$axios.defaults.baseURL='http://127.0.0.1:8888';
+       var name=this.$axios.get('/name',{
+         params:{id:15},
+         //post中使用
+         // transformRequire:function(data){
+         //
+         // },
+         transformResponse:function(data){
+           console.log(data)
+           return data='ys';
+         },
+       });
+       var age=this.$axios.get('http://127.0.0.1:8888/age');
+       this.$axios.all([name,age]).then(this.$axios.spread((res1,res2)=>{
+         console.log('res1:'+JSON.stringify(res1))
+         console.log('res2:'+JSON.stringify(res2))
+         this.res1=res1.data;
+         this.res2=res2.data;
+
+
+       })).catch((e)=>{
+         console.log('合并异常:'+e)
+        })
+
+      },
+      getSex(){
+
+        this.$axios.get('http://127.0.0.1:8888/name').then((res)=>{
+          console.log('返回get_name：'+JSON.stringify(res))
+
+          this.$axios.get('http://127.0.0.1:8888/sex',{params:{name:res.data}}).then((res)=>{
+            this.sex=res.data;
+
+          })
+
+        })
+          .catch((e)=>{
+            console.log("异常："+e)
+          })
+
+      },resume_upload(){//恢复上传
+        let fd=new FormData();
+        console.log('size:'+this.file.size+'total:'+this.total);
+        let start=this.load*this.file.size/this.total -1;
+
+       // fd.append('file',this.file.slice(this.load,this.file.size));
+        fd.append('file',this.file.slice(start,this.file.size));
+        let cancel_source=axios.CancelToken;
+        var source=cancel_source.source();
+        this.$axios.post('http://127.0.0.1:8888/upload',fd,{
+          cancelToken:source.token,
+          onUploadProgress:(progressEvent)=>{
+            this.load=progressEvent.loaded;
+
+            this.total=progressEvent.total;
+            this.rate=(progressEvent.loaded/progressEvent.total)*100;
+            console.log(progressEvent.loaded+'/'+progressEvent.total)
+          },
+        }).then((res=>{
+
+        })).catch((e)=>{
+          console.log("异常："+e)
+        })
+
+      },cancel_upload(){
+        //暂停上传
+        this.sourse.cancel();
+
+
+
+      },changeFile(e){//上传文件改变
+       this.file=e.target.files[0];
+
+       console.log(e.target)
+      },upLoad(e){//上传
+        let cancel_token=axios.CancelToken;
+        let source=cancel_token.source();
+        this.sourse=source;
+        let fd=new FormData();
+        fd.append('file',this.file)
+        console.log('shangchuan :'+this.file.size)
+       this.$axios.post('http://127.0.0.1:8888/upload',fd,{
+         cancelToken:source.token,
+         onUploadProgress:(progressEvent)=>{
+           this.load=progressEvent.loaded;
+
+           this.total=progressEvent.total;
+           this.rate=(progressEvent.loaded/progressEvent.total)*100;
+console.log(progressEvent.loaded+'/'+progressEvent.total)
+         },params:{file_name:this.file.name}
+       }).then((res=>{
+
+       })).catch((e)=>{
+         console.log("异常："+e)
+       })
+      },
+      get_img(){
+        this.$axios.get('http://127.0.0.1:8888/get_img').then((res)=>{
+          console.log('返回get_img：'+JSON.stringify(res))
+        })
+          .catch((e)=>{
+            console.log("异常："+e)
+          })
+
+      
+      },
+      get_list(){
+        this.$axios.get('http://127.0.0.1:8888/get_news_list/1').then((res)=>{
+          console.log('返回get_news_list：'+JSON.stringify(res))
+        })
+          .catch((e)=>{
+            console.log("异常："+e)
+          })
+
+      
+      }
+
+    },
+    data:function(){
+      return {
+        id:'1111',
+        res1:'',
+        res2:'',
+        sex:'',
+        file:'',
+        loaded:'',
+        total:'',
+        rate:0
+      }
+    }
+
+  })
+
+  new Vue({
+    components:{son:Son},
+    el:'#app',
+    template:`<son/>`
+
+  })
+
+
+
+
+
+</script>
+</body>
+</html>

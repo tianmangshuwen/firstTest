@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style type="text/css" scoped>
+    .myhead{
+      background-color: yellow;
+    }
+    .mybody{
+      background-color: green;
+    }
+    .myfoot{
+      background-color: blue;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript">
+  //全局模板
+  Vue.component('CommonTemplate', {
+    template:
+      `
+    <div>
+    {{input}}:<input type="text" v-model="input">
+    </div>
+    `,
+    data: () => {
+      return {
+        input: "测试公共组件"
+      }
+    }
+  })
+  Vue.filter('CommonReverse', (oldValue, ...newValue) => {
+    var temp = [...newValue];
+    return newValue.join("") + ':' + oldValue.split('').reverse().join("")
+  })
+
+  var Son = Vue.extend({
+    template: `<div><p>子组件tmp_parms值：{{ tmp_parms }}</p></div>`,
+    props: ['tmp_parms']
+  })
+
+  var My_head = {
+    components: {
+      son: Son
+    },
+    template:
+      `
+      <div>
+
+           <p>我是头部</p>
+
+          <p>测试父子通讯(父组件值):{{tmp_parm}}</p>
+          修改父组件值：<input type="text" v-model="tmp_parm">
+          <son :tmp_parms="tmp_parm"></son>
+
+      </div>
+      `,
+    data: () => {
+      return {
+        tmp_parm: "测试父子通讯(父传子)"
+      }
+    }
+
+  }
+
+  var My_body = {
+
+    template:
+      `
+      <div>
+
+           <p>我是中部</p>
+
+         测试全局模板：<br>
+         <CommonTemplate></CommonTemplate>
+
+         测试全局过滤器：<br>
+         {{ common_filter|CommonReverse('带参数','2个') }}：
+         <input type="text" v-model="common_filter">
+
+         测试自定义过滤器：<br>
+         {{define_filter|defineFilter}}
+         <input type="text" v-model.lazy="define_filter">
+
+
+
+
+      </div>
+      `,
+    data: () => {
+      return {
+        common_filter: '取反',
+        define_filter: '值加1'
+
+      }
+    },
+    filters: {
+      defineFilter: (oldValue) => {
+        var temp=Number(oldValue) ||oldValue;
+        if ( typeof(temp) == "number" ) {
+          oldValue++;
+        } else {
+          if (oldValue != '值加1'&& oldValue != '') {
+            alert("请输入数字测试")
+          }
+        }
+        return oldValue;
+      },
+  //     CommonReverse:(oldValue, ...newValue) => {
+  //   var temp = [...newValue];
+  //   return newValue.join("") + ':' + oldValue.split('').reverse().join("")
+  // }
+      
+    }
+
+  }
+
+  var My_foot = {
+
+    template:
+      `
+      <div>
+
+           <p>我是尾部</p>
+           <h2>测试watch</h2>
+<input type="text" v-model="mess">
+(agr1+agr2)*arg3:<br>
+(<input type="text" v-model="arg1">+<input type="text" v-model="arg2">)*<input type="text" v-model="arg3">=<input type="text" :value="result">
+
+
+
+      </div>
+      `,
+    data: () => {
+      return {
+        arg1:15,
+        arg2:10,
+        arg3:2,
+        mess: "普通监视",
+        mess2: [{ "name": "深度监视" }]
+      }
+    },
+    watch: {
+      mess: function (new_data, old_data) {
+        if (new_data == "iloveyou") { alert("我很好！") }
+        console.log("一般监控")
+
+      },
+      mess2: {
+        deep: true,
+        handler: function (new_da, old_da) {
+          console.log("深度检测:" + JSON.stringify(new_da))
+
+        }
+
+
+      }
+
+
+    },
+    computed: {
+      result: function () {
+        console.log("多个监控" +this)
+        return ((this.arg1 - 0) + (this.arg2 - 0)) * this.arg3
+      }
+
+    }
+
+  }
+
+  var App = {
+    components: {
+      my_head: My_head,
+      my_body: My_body,
+      my_foot: My_foot
+    },
+    template: `
+              <div>
+              <div :class="my_head"><my_head/></div>
+              <div :class="my_body"><my_body/></div>
+              <div :class="my_foot"><my_foot/></div>
+              </div>
+              `,
+    data:()=>{
+      return {
+        my_head:'myhead',
+        my_body:'mybody',
+        my_foot:'myfoot'
+      }
+    }
+
+  }
+
+  var vm = new Vue({
+    el: '#app',
+    components: {
+      app: App
+
+    },
+    template: `<app/>`
+
+
+
+  })
+
+
+</script>
+</body>
+</html>

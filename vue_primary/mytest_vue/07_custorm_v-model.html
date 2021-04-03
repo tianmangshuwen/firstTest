@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript">
+  var CustormSon={
+    template:
+      `<div>
+son:<input type="text" :value="mess" @input="$emit('change',$event.target.value)">
+
+
+
+      </div>`,
+    props:{
+      mess:String,
+      default(){
+        return ''
+      },
+
+    },
+    model:{
+      prop:'mess',
+      event:'change'
+    }
+  }
+
+
+  var CustormSon2 = {
+    template: `<div class="hello">
+ son:<input type="text" v-bind:title="value" @click="close()" :value="value">
+<!--son:<h1  v-bind:title="value" @click="close()" >{{ value }}</h1>-->
+
+
+  </div>`,
+    props: {
+      value: Number
+    },
+    data() {
+      return {};
+    },
+    methods: {
+      close() {
+        this.num += 1;
+        this.$emit("input", this.value + 1);
+      }
+    }
+  };
+
+  var Father={
+    template:
+      `
+<div>
+<p>this is father!</p>
+<p>下面是子组件：</p>
+eg:(1)
+<br>
+father:
+&nbsp{{msg}}&nbsp&nbsp <br>
+ <custormson v-model="msg"/>
+
+ eg:(2)子组件绑定冒泡提示
+ <br>
+<!--father:<h1 style="color:green">{{msg2}}</h1>-->
+    father:<input style="color:green" type="text" v-model="msg2">
+     <custormson2 v-model="msg2" />
+    <button @click="test()">Change_father</button></div>\`
+
+</div>
+      `,
+    data:function (){return {
+      msg:"v-model实例1",
+      msg2:2
+
+    }},methods:{
+      test(){
+        this.msg2 -= 1;
+      }
+    }
+
+
+  }
+
+
+  Vue.component('father',Father)
+  Vue.component('custormson',CustormSon)
+  Vue.component('custormson2',CustormSon2)
+  var app=new Vue({
+el:'#app',
+    template:`<father/>`
+  })
+
+
+
+
+
+</script>
+</body>
+</html>

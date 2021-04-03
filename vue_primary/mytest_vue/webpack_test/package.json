@@ -1,0 +1,22 @@
+{
+  "name": "webpack_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "webpack ./main.js ./build.js",
+    "dev": "webpack --config ./webpack.dev_config.js",
+    "prod": "webpack --config ./webpack.prod_config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "css-loader": "^0.28.11",
+    "file-loader": "^6.0.0",
+    "style-loader": "^0.21.0",
+    "url-loader": "^4.1.0",
+    "webpack": "^3.6.0"
+  },
+  "devDependencies": {}
+}

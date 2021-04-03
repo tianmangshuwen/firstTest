@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+
+<script type="text/javascript">
+
+var event_b=new Vue();
+//子组件用于添加数据----测试父子通讯
+var Inputer={
+  template:
+    `
+    <div>
+    test:<input type="text" v-model="title">
+    <button @click="addList()">添加</button>
+    </div>
+    `,
+  methods:{
+    addList:function () {
+
+      this.$emit('index',this.title)
+
+    }
+  },
+  data:function () {
+    return {
+      title:''
+    }
+  }
+}
+
+///子组件用于删除数据----测试父子通讯
+ var Show={
+  template:`
+<div>
+<ul>
+<li v-for="item in show_list">{{item.title}}&nbsp<button @click="deleteList(item.id)">删除</button></li>
+
+</ul></div>`,
+   props:['show_list'],
+   methods:{
+     deleteList:function(id){
+       console.log(this._events)
+   this.$emit('indexDel',id);
+
+       event_b.$emit('writelog',id)
+   }}
+ }
+
+
+//组件之间的通讯----自定义事件（与index是父子通讯，与show是兄弟组件通讯）
+ var Brother={
+  template:`<div>兄弟组件记录日志开关：{{isShow}}</div>`,
+   mounted:function () {
+    //注册自定义事件
+
+     event_b.$on('writelog',this.log)
+   },
+   methods:{
+    log:function(id) {
+      if(typeof(id)=='object'){
+        console.log('添加一条数据'+id.id);
+      }else{
+        console.log('删除一条数据'+id);
+      }
+    }
+   },Destroy:function(){
+     console.log('Inputer destrory!')
+   },
+   beforeDestroy:function () {
+     console.log('Inputer beforedestrory!')
+     event_b.$off('writelog',this.log);
+
+   },
+   props:['isShow'],
+   data:function(){
+    return {IsShow:true}
+   }
+
+ }
+Vue.component('show',Show)
+Vue.component('inputer',Inputer)
+Vue.component('brother',Brother)
+
+
+
+
+var Index={
+  template:`
+<div >
+  <div >父组件
+  是否记录日志：<input type="text" v-model="isShow">
+<inputer  @index="indexAdd"></inputer>
+<show :show_list="list_index" @indexDel="indexDelete"></show>
+<div >兄弟：<brother :isShow="isShow" v-if="isShow.toString()=='true'"></brother></div>
+
+  </div>
+
+
+
+</div>`,
+  data:function () {
+    return {
+      list_index:[],
+      isShow:true,
+
+    }
+
+  },
+  methods:{
+    indexAdd:function (title) {
+
+      var add_data={
+        id:`id-${Date.now()}`,
+        title
+      }
+
+      event_b.$emit('writelog',add_data)
+
+     this.list_index.push(add_data)
+
+    },
+    indexDelete:function (id){
+      console.log('f',this)
+      this.list_index= this.list_index.filter(item=>item.id!==id)
+    }
+  },
+  beforeDestroy:function(){
+    console.log('index beforedestrory!')
+  },Destroy:function(){
+    console.log('index destrory!')
+  }
+}
+
+
+  new Vue({
+    el:'#app',
+
+    components:{
+      app:Index
+    },
+    template: `<div>
+<app v-if="list_index"></app>
+<button @click="list_index=!list_index">父组件开关</button>
+</div>
+ `,data(){
+
+      return {
+        'list_index':true
+
+      }
+    }
+
+
+
+
+  })
+
+
+
+</script>
+</body>
+</html>

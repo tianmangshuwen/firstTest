@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<a href="#/login">登录</a>
+<a href="#/registered">注册</a>
+<div id="app"></div>
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+<script type="text/javascript" src="..\node_modules\vue-router\dist\vue-router.js"></script>
+
+<script type="text/javascript">
+
+  Vue.use(VueRouter);
+  var Islogin = false;
+  var Login = {
+    template: `<div>this is login!</div>`,
+    created() {
+      Islogin = true;//该变量实际在localstore存储，或发起ajax请求获取
+
+    }
+  }
+  var Registered = Vue.extend({
+    template: `<div>this is registered!</div>`
+  })
+
+  var Woman = Vue.extend({
+    template: `<div>this is woman!
+<router-view></router-view></div>
+ `
+  })
+  var Food = Vue.extend({
+    template: `<div>this is woman_food!</div>`
+  })
+
+  var Music = Vue.extend({
+    template: `<div>this is music!
+
+<router-view></router-view></div>`
+  })
+  var router = new VueRouter({
+    routes: [
+      {
+        path: '/login',
+        name: 'login',
+        component: Login,
+        children: [{
+          path: 'woman',
+          name: 'woman',
+          component: Woman,
+          children: [{
+            path: '/food',//添加斜杠时，前面为根目录，即替换/login
+            name: 'food',
+            component: Food,
+          }]
+        }]
+      }, {
+        path: '/registered',
+        name: 'registered',
+        component: Registered
+      }
+    ]
+
+  })
+  //可以通过怕addRoutes添加路由规则
+  router.addRoutes([{
+    path: '/music',
+    name: 'music',
+    component: Music,
+    meta: {
+      Ischecked: true
+    },children:[{
+      path: 'woman',
+      name: 'woman',
+      component: Woman,
+
+    }]
+  },{ path: '/',redirect:{name:'login'}
+    }
+  ])
+  router.beforeEach(function (to, from, next) {
+    console.log(to)
+    if (to.meta.Ischecked) {
+      if (!Islogin) {
+        alert("please login !")
+        next({name: 'login'})
+      }
+    }
+    console.log(from)
+    next()
+    //next(false)表示什么也不做
+
+  })
+
+  var App = {
+    //router-link相当于a标签
+    template: `
+          <div>
+          <router-link to="/login">去登录</router-link>
+
+          <router-link :to="{name:'registered'}">去注册</router-link>
+          <router-view></router-view>
+          <button @click='href()'>baidu</button>
+
+
+
+
+          </div>
+     `,
+    methods:{
+      href:()=>{
+   location.href='https://www.baidu.com';
+      }
+    }
+
+
+  }
+  new Vue({
+    el: '#app',
+    router: router,
+    components: {
+      app: App
+    },
+    template: `<app/>`
+
+
+  })
+
+
+</script>
+</body>
+</html>

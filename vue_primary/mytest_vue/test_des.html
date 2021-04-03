@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+
+<script>
+  var Son = {
+    template:`<div>
+子组件{{flag}}
+</div> `, beforeDestroy(){
+      console.log("2",'xiaohuiqian')
+    },
+    destroyed(){
+
+      console.log("2",'xiaohui')
+    },beforeCreate(){
+      console.log("2",'chuangjianqian')
+
+    },created(){
+      console.log("2",'chuangjian')
+    },beforeMount(){
+      console.log("2",'guazaiqian')
+    },
+    mounted(){
+      console.log("2",'guazai')
+    },beforeUpdate(){
+      console.log("2",'genxinqian')
+    },updated(){
+      console.log("2",'genxin')
+    },props:['flag']
+
+  }
+
+Vue.component('son',Son)
+  var Father = {
+    template:`<div>
+fu组件
+<son :flag="flag"></son>
+</div> `,
+
+    beforeDestroy(){
+      console.log("1",'xiaohuiqian')
+    },
+    destroyed(){
+
+      console.log("1",'xiaohui')
+    },beforeCreate(){
+      console.log("1",'chuangjianqian')
+
+    },created(){
+      console.log("1",'chuangjian')
+    },beforeMount(){
+      console.log("1",'guazaiqian')
+    },
+    mounted(){
+      console.log("1",'guazai')
+    },beforeUpdate(){
+      console.log("1",'genxinqian')
+    },updated(){
+      console.log("1",'genxin')
+    },props:['flag']
+
+  }
+
+
+  Vue.component('def',{
+    render : function(createElement){
+
+
+      return createElement('div','this is div',[createElement('h1','this is tag')])
+
+  }
+  })
+  new Vue({
+    el:'#app',
+    components:{
+      father:Father
+    },template: `<div>
+<def></def><br>
+子组件展示：<input type="text" v-model="flag">
+传参：<input type="text" v-model="show">
+<div >
+<father :flag='show' v-if="flag.toString() == 'true'"></father>
+</div>
+
+
+{{flag}}
+</div>`,
+    data(){
+      return {
+        flag:true,
+        show:true
+      }
+    },
+
+
+  })
+
+
+</script>
+
+</body>
+</html>

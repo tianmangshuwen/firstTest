@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hash</title>
+</head>
+<body>
+    <button id="btn_hash">修改hash</button>
+    <script>
+        window.onhashchange=(event)=>{
+            console.log('old_url',event.oldURL);
+            console.log('new_url',event.newURL);
+            console.log('hash',location.hash);
+        }
+        //页面初次加载
+        document.addEventListener('DomContentLoaded',()=>{
+            console.log('hash:',location.hash)
+        })
+
+        //js修改hash
+        document.getElementById('btn_hash').addEventListener('click',()=>{
+            location.href='#/user'
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="text/javascript" src="..\node_modules\vue\dist\vue.js"></script>
+  <script type="text/javascript">
+
+    var Son = Vue.extend({
+      template: `<div>
+                  <slot name="slot01">heklll</slot>
+                  <ul>
+
+                  <li><slot name="slot02">hello</slot></li>
+                  </ul>
+                  <p>测试子组件传数据给父组件填充slot</p>
+                  <slot :toFather="result">heklll</slot>
+                  </div>
+`, data: function () {
+        return {
+          result: {
+            detail: '测试值域插槽',
+            title: 'son_title'
+          }
+        }
+
+      }
+    })
+
+
+
+    var App = {
+      //注意:
+      //值域插槽slot中:
+      // 1.需要调用子组件数据来填充slot时，子组件绑定动态属性A（eg：son组件中的toFather），
+      // 2.父组件自定义v-slot为B(eg:slot_son),调用时B.A(eg:slot_son.toFather.detail)
+      //具名slot：
+      //1.子组件要定义name A（eg：son组件中的slot01，slot02）
+      //2.父组件使用时两种方式：
+      ////              slot="A"(eg:<h2 slot="slot01">)
+      ////              使用templater 然后v-slot：A  （eg：<template v-slot:slot02>）
+      //在需要的地方加入ref="num",this.$refs.num获取节点
+      components: { son: Son },
+      template: `
+          <div>
+          <button ref="btn">test_ref</button>
+          <p>具名slot：</p>
+          <son ref="son"><h2 slot="slot01">test_slot01</h2>
+          <template v-slot:slot02>{{show}}</template>
+          <template v-slot="slot_son">{{slot_son.toFather.detail}}</template>
+          </son><br>
+
+          测试页面渲染：<input type="text" v-if="show" ref="testShow">
+
+          </div>
+     `,
+      mounted: function () {
+        console.log(this.$refs.btn);
+        console.log(this.$refs.son);
+        this.show = false;
+        this.show = true;
+        //$nextTick(function(){})用于页面渲染后执行
+        this.$nextTick(() => {
+          this.$refs.testShow.focus();
+        })
+      },
+      data: function () {
+        return { show: true }
+      }
+
+    }
+    new Vue({
+      el: '#app',
+      components: {
+        app: App
+      },
+      template: `<app/>`
+
+
+
+
+    })
+
+
+
+
+  </script>
+</body>
+
+</html>

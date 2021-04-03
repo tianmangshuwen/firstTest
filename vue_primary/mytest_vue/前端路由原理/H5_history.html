@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5 History</title>
+</head>
+<body>
+    <button id="btn_history">修改history</button>
+    <script>
+      //启动方法:http-server -p 8001
+        //页面初次加载,获取path
+        document.addEventListener('DomContentLoaded',()=>{
+            console.log('load_pathname:',location.pathname)
+        })
+
+        //打开新路由
+        //注意:使用pushState方式,浏览器不会刷新页面
+        //pushState方法接受三个参数，依次为：
+                // state：一个与指定网址相关的状态对象，
+                // popstate事件触发时，该对象会传入回调函数。如果不需要这个对象，此处可以填null。
+                // url：新的网址，必须与当前页面处在同一个域
+        document.getElementById('btn_history').addEventListener('click',()=>{
+           
+            const state ={ name :'page1'};
+            console.log('切换路由到','page1');
+            history.pushState(state,'','page2')
+        })
+        //监听浏览器前进后退
+        window.onpopstate=(event)=>{
+            console.log('onpopstate',event.state,location.pathname)
+        }
+    </script>
+</body>
+</html>

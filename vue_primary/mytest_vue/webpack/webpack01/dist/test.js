@@ -34,7 +34,7 @@ let p = new Promise((res, rej) => {
 
   rej("fail");
 });
-console.log(p, "pewew22"); // if (module.hot) {
+console.log(p, "pewew"); // if (module.hot) {
 //     console.log(111111111111);
 // }
 

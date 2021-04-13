@@ -1,0 +1,169 @@
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   1) const path=require("path")
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   2) const { resolve } = require("path")
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   3) const HtmlWebpackPlugin=require("html-webpack-plugin")
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   4) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   5) const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   6) const  MiniCssExtractPlugin  = require('mini-css-extract-plugin')
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800   7) const webpack  = require("webpack")
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   8) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800   9) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  10) module.exports={
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  11)   devtool:"source-map",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  12)   /**打包文件入口 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  13)   /**单入口 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  14)    // entry:"./src/index.js",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  15)    /**多入口 可以是对象*/
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  16)    entry:{
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  17)      index:"./src/index.js",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  18)      list:"./src/list.js",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  19)      test:"./src/test.js",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  20)     },
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  21)     output:{
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  22)       /**单出口 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  23)         //filename:"main.js",/**打包输出的文件名 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  24)         /**多出口 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  25)         filename:"[name].js",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  26)         path:path.resolve(__dirname,"dist") /**打包文件输出路径 */
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  27)     },
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  28)     module:{
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  29) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  30)         rules:[
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  31)             { /**图片处理 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  32)               test:/\.(jpg|gif|png)$/i,/**i匹配大小写 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  33)               use: [
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  34)                   {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  35)                     loader: 'url-loader',
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  36)                     options: {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  37)                       limit: 100,/**超过100字节单独打包成文件，不超过则以base64写入总体的打包文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  38)                       esModule: false,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  39)                      name:"[name]_[hash:8].[ext]",/**ext为拓展名，该属性设置打包后的文件名 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  40)                       outputPath:"./image"
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  41)                     },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  42)                   },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  43)                 ],
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  44)             },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  45)             {/**css的文件处理 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  46)               test:/\.css$/i,
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  47)                 use: [
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  48)                     {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  49)                       loader: "style-loader",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  50)                       options: {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  51)                         injectType:"singletonStyleTag" /**样式合并到一个style标签中 */
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  52)                       },
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  53)                     },"css-loader"
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  54)                   ],
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  55)             },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  56)             {/**less的文件处理 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  57)               test:/\.less$/,
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  58)               use: [
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  59)                   // {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  60)                   //   loader: "style-loader",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  61)                   //   options: {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  62)                   //     injectType:"singletonStyleTag" /**多个样式文件合并到一个style标签中 */
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  63)                   //   },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  64)                   // },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  65)                   /**mini-css-extract-plugin在production模式下更常用于获取单独的CSS文件。对于development模式（包括webpack-dev-server），您可以使用style-loader，因为它使用多个将CSS注入DOM中 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  66)                   {loader: MiniCssExtractPlugin.loader},
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  67)                   "css-loader",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  68)                   {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  69)                     loader:"postcss-loader",/**postcss-loader为了兼容浏览器，添加浏览器前缀，并压缩 CSS */
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  70)                     options: {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  71)                       // sourceMap: false,
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  72)                       postcssOptions: {
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  73)                         // plugins: [require("autoprefixer")(
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  74)                         //   {overrideBrowserslist:["last 2 versions","> 1%", ]
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  75)                         //   }
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  76)                         // )],
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  77)                         plugins: [require("autoprefixer")()]
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  78)                         ,
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  79)                       },
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  80)                     },
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800  81)                   },"less-loader"
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  82)                 ],
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  83)               },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  84)             {/**woff的字体文件处理 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  85)               test:/\.woff$/,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  86)                 use: [
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  87)                     {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  88)                       loader: "file-loader",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  89)                     }
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  90)                   ],
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  91)             },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  92)             {/**js|jsx的处理 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  93)               test: /\.(js|jsx)$/,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  94)               exclude: /node_modules/,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  95)               use: {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  96)                 loader: 'babel-loader',
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  97)                 options: {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  98)                   presets: [[
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800  99)                     '@babel/preset-env',{
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 100)                       "targets": {
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 101)                         chrome:"67"
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 102)                       },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 103)                       "corejs":  2,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 104)                       "useBuiltIns": "usage",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 105) 
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 106)                     }
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 107)                     
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 108) 
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 109)                 
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 110)                 ]]
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 111)                 }
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 112)               }
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 113)             }
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 114)           
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 115)         
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 116)                 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 117) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 118)             
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 119)             ]
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 120)     },
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 121)    devtool:"inline-source-map",
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 122)     plugins:[
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 123)       /**根据模板生成一个文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 124)       /**单文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 125)       // new HtmlWebpackPlugin({
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 126)       //   template:"src/test.html",/**模板 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 127)       //   filename:"test_template.html"/**生成文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 128)       // }),
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 129)       /**多文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 130)        new HtmlWebpackPlugin({
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 131)         template:"src/test.html",/**模板 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 132)         filename:"index.html",/**生成文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 133)         chunks:["index"],/**使html引入对应的js */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 134)       }), 
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 135)       new HtmlWebpackPlugin({
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 136)         template:"src/test.html",/**模板 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 137)         filename:"test.html",/**生成文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 138)         chunks:["test"]
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 139)       }), 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 140)       new HtmlWebpackPlugin({
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 141)         template:"src/test.html",/**模板 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 142)         filename:"list.html",/**生成文件 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 143)         chunks:["list"]
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 144)       }),
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 145)       /**打包时清除之前的打包内容 */
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 146)        new CleanWebpackPlugin(),
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 147)        new MiniCssExtractPlugin({
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 148)          /**将 CSS 提取到单独的文件中，为每个包含 CSS 的 JS 文件创建一个 CSS 文件，并且支持 CSS 和 SourceMaps 的按需加载 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 149)          filename:'[name].css',
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 150)        }),
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 151)        /**webpack热更新*/
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 152)        new webpack.HotModuleReplacementPlugin()
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 153)        
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 154) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 155) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 156) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 157) 
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 158)     ],
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 159)     target: "web", /**webpack升级后对target进行了调整，原先默认为web，但是现在会根据开发者配置的browserslist而发生变化,会导致热更新不生效 */
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 160)     devServer:{
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 161)       contentBase:"dist",
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 162)       port:8081,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 163)       open:true,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 164)       hot:true,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 165)       hotOnly:true,
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 166)       //compress: true
+3c6c740c (tianmangshuwen 2021-04-11 13:49:45 +0800 167)     }
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 168)     
+^8187fd1 (tianmangshuwen 2021-04-04 02:01:59 +0800 169) }
